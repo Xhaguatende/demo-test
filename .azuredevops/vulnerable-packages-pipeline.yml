@@ -1,0 +1,20 @@
+resources:
+  repositories:
+  - repository: pipeline-templates
+    type: git
+    name: ZZ.Circle.AzurePipelines
+
+trigger: none
+
+schedules:
+- cron: '0 0 * * *'
+  displayName: Daily midnight build
+  branches:
+    include:
+    - main
+  always: true
+
+extends:
+  template: dotnet-templates/vulnerable-packages-pipeline.yaml@pipeline-templates
+  parameters:
+    dotnetVersion: '9.x'

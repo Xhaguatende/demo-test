@@ -1,0 +1,38 @@
+resources:
+  repositories:
+  - repository: pipeline-templates
+    type: git
+    name: ZZ.Circle.AzurePipelines
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    exclude:
+      - 'README.md'
+
+parameters:
+  - name: bypassQuality
+    type: boolean
+    default: false
+    displayName: 'Bypass Quality Steps (e.g., Hotfix)'
+
+  - name: publishRelease
+    type: boolean
+    default: false
+    displayName: 'Publish Release'
+
+extends:
+  template: dotnet-templates/ci-pipeline.yaml@pipeline-templates
+  parameters:
+    dotnetVersion: '9.x'
+    bypassQuality: ${{ parameters.bypassQuality }}
+    publishRelease: ${{ parameters.publishRelease }}
+    sonarCloudProjectKey: 'ZigZag-Global_ZZ.Circle.Gateway'
+    sonarCloudProjectName: 'ZZ.Circle.Gateway'
+    apiProject: 'src/ZZ.Circle.Gateway/ZZ.Circle.Gateway.csproj'
+    containerRepository: 'zzt/circle-gateway'
+    hasMongoDBService: false
+    hasMongoDbMigration: false
+    sonarPostProcessing: true
